@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": [
+        "NEXTAUTH_SECRET",
+        "USER_MANAGEMENT_BE_URL",
+        "NEXTAUTH_URL",
+        "NEXT_PUBLIC_DOMAIN",
+        "PROFILE_PHOTO_STORAGE_URL"
+      ]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "dev": {
+      "cache": false
+    },
+    "start:dev": {
+      "cache": false
+    },
+    "test:e2e": {
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^lint", "^test:e2e", "^build"],
+      "outputs": ["coverage/**"]
+    }
+  }
+}

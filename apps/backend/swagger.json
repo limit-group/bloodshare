@@ -1,0 +1,345 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "BloodCare API",
+    "version": "1.0.0",
+    "description": "API for BloodShare Application"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api",
+  "tags": {
+    "name": ["Users", "RegularFeed", "Donations", "EmergencyFeed", "Profiles"],
+    "description": "Super Charged API"
+  },
+  "produces": ["application/json"],
+  "paths": {
+    "/e-feeds": {
+      "get": {
+        "tags": ["EmergencyFeed"],
+        "summary": "List of Feeds",
+        "responses": {
+          "200": {
+            "description": "feeds fetched successfully"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      },
+      "post": {
+        "tags": ["EmergencyFeed"],
+        "summary": "Share an Emergency Feed",
+        "responses": {
+          "201": {
+            "description": "Feed shared success"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      }
+    },
+    "/donations": {
+      "get": {
+        "tags": ["Donations"],
+        "summary": "List of My Donations",
+        "responses": {
+          "200": {
+            "description": "feeds fetched successfully"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Donations"],
+        "summary": "Donated",
+        "responses": {
+          "201": {
+            "description": "I have donated"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      }
+    },
+    "/feeds": {
+      "get": {
+        "tags": ["RegularFeed"],
+        "summary": "List of Feeds",
+        "responses": {
+          "200": {
+            "description": "feeds fetched successfully"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      },
+      "post": {
+        "tags": ["RegularFeed"],
+        "summary": "Share a Feed",
+        "responses": {
+          "201": {
+            "description": "Feed shared success"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      }
+    },
+    "/profiles": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "User Profile",
+        "responses": {
+          "200": {
+            "description": "profile success"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "401": {
+            "description": "token provided not valid"
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Profiles"],
+        "summary": "Create User Profile",
+        "responses": {
+          "201": {
+            "description": "profile creation success"
+          },
+          "400": {
+            "description": "auth token not supplied."
+          },
+          "500": {
+            "description": "Failed to fetch feeds"
+          }
+        }
+      }
+    },
+    "profiles/update": {
+      "tags": ["Profiles"],
+      "summary": "Update User Profile",
+      "responses": {
+        "200": {
+          "description": "profile update success"
+        },
+        "400": {
+          "description": "auth token not supplied."
+        },
+        "500": {
+          "description": "Failed to fetch feeds"
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User Login",
+        "responses": {
+          "200": {
+            "description": "login success"
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User Signup",
+        "description": "",
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "successful signup"
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Otp Verification",
+        "description": "",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "successful mail verification"
+          }
+        }
+      }
+    },
+    "/auth/password": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Password Update",
+        "description": "",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "successful password update"
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Donation": {
+        "required": ["donorId", "donorNumber", "facility"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "donorId": {
+            "$ref": "/#/definitions/User"
+          },
+          "donorNumber": {
+            "type": "string"
+          },
+          "facility": {
+            "type": "string"
+          }
+        }
+      },
+      "Donations": {
+        "type": "array",
+        "$ref": "/#/definitions/Donation"
+      },
+      "DonationFeed": {
+        "required": ["userId", "media", "description"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "userId": {
+            "$ref":"/#/definitions/User"
+          },
+          "media": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "DonationFeeds": {
+        "type": "array",
+        "$ref": "/#/definitions/DonationFeed"
+      },
+      "Profile": {
+        "required": ["userId", "name", "avatar", "dateOfBirth", "bloodType", "latitude", "longitude"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "userId": {
+            "$ref": "/#/definitions/User"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string"
+          },
+          "bloodType": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "string"
+          },
+          "longitude": {
+            "type": "string"
+          }
+        }
+      },
+      "EmergencyFeed": {
+        "required": ["userId", "description", "bloodType"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "description": {
+            "type": "string"
+          },
+          "bloodType": {
+            "type": "string"
+          }
+        }
+      },
+      "EmergencyFeeds": {
+        "type": "array",
+        "$ref": "/#/definitions/EmergencyFeed"
+      },
+      "User": {
+        "required": ["phoneNumber", "password"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Users": {
+        "type": "array",
+        "$ref": "/#/definitions/User"
+      }
+    }
+  }
+}

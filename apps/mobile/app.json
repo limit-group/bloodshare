@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "blood-share",
+    "slug": "blood-share",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "orientation": "portrait",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.limitgroup.bloodshare"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "74a7c163-1ca6-4ff1-b7c4-a70bcd2f56ad"
+      }
+    }
+  }
+}

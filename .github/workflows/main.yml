@@ -1,0 +1,77 @@
+name: Deploy To GCP
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: bloodshare
+  PORT: 8080
+  GITHUB_SHA: ${{ github.sha }}
+  GITHUB_REF: ${{ github.ref }}
+
+jobs:
+  build-beta:
+    name: Deploy bloodshare
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v0"
+
+      - name: "Use gcloud CLI"
+        run: "gcloud info"
+
+      - name: "Login to artifact registry"
+        run: |-
+          gcloud auth print-access-token '${{ secrets.GCP_SERVICE_ACCOUNT }}' \
+          | docker login -u oauth2accesstoken --password-stdin https://us-central1-docker.pkg.dev
+
+      - name: "Generate an .env file"
+        run: |-
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          echo "AT_KEY=${{ secrets.AT_KEY }}" >> .env
+          echo "AT_NAME=${{ secrets.AT_NAME }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
+      - name: Clean package manager cache
+        run: npm cache clean --force
+        
+      - name: Build docker image
+        run: |-
+          docker build -t us-central1-docker.pkg.dev/bloodshare-395710/bloodshare/bloodshare:beta . \
+          --file ./Dockerfile
+
+      - name: Publish beta image to artifact registry
+        run: |-
+          export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
+          echo $TAG
+          docker push us-central1-docker.pkg.dev/bloodshare-395710/bloodshare/bloodshare:beta
+
+  deploy-beta:
+    name: Deploy beta release to GCP
+    runs-on: ubuntu-20.04
+    needs: [build-beta]
+    steps:
+      - uses: actions/checkout@v2
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v0"
+      - name: "Login to artifact registry"
+        run: |-
+          gcloud auth print-access-token '${{ secrets.GCP_SERVICE_ACCOUNT }}' \
+          | docker login -u oauth2accesstoken --password-stdin https://us-central1-docker.pkg.dev
+      - id: "deploy-CR-beta"
+        uses: "google-github-actions/deploy-cloudrun@v1"
+        with:
+          service: "beta-bloodshare"
+          image: "us-central1-docker.pkg.dev/bloodshare-395710/bloodshare/bloodshare:beta"
